@@ -1,0 +1,4 @@
+A simple public-key algorithm is Diffie-Hellman key exchange. This protocol
+enables two users to establish a secret key using a public-key
+scheme based on discrete logarithms. The protocol is secure only if the
+authenticity of the two participants can be established.
