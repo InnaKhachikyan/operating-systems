@@ -1,14 +1,11 @@
-Github link:
-
-
 I added printing before the start of each program to differentiate them. If you type make and then make test, all the programs will compile and run.
 
-#Assignment0
+# Assignment0
 
 I initialize a fork pid to save the returned value of the fork(). If it is -1, then fork failed so I send perror. This is repeated 2 more times. As a result we have 2^3 processes
 
-		     P
-		     |
+		         P
+		         |
 	       /           \
 	      P             C1
 	      |             |
@@ -19,13 +16,13 @@ I initialize a fork pid to save the returned value of the fork(). If it is -1, t
 	P  C4   C2 C5  C1  C6  C3  C7
 
 
-#Assignment1
+# Assignment1
 
 First I fork the process and store the return value. If the return value is 0 (i.e. we are in the child process), we call execl to execute ls command. Else (if we are in the parent process), we call wait(NULL), which waits for the child process to finish its job, then print "Parent process done".
 In case fork or exec return values are -1, means the call failed, something went wrong, perror is sent and main is returned with -1.
 
 
-#Assignment2
+# Assignment2
 
 First fork is done with storage of the return value. If it is -1, then perror is sent and main returned with -1 value.
 If the return value is 0, we are in the child process and call exec to execute the ls program. Else if we are in the parent process, we do fork again and store the return value. 
@@ -35,7 +32,7 @@ Else (if we are in the parent process), we just wait for the children to finish 
 As a result we see in the terminal the ls command result, date command result and in the end "Parent process done". It can also be vice-versa: date command result, ls command result, then "Parent process done". So, date and ls may be mixed in order, but the "Parent process done" print always comes last.
 
 
-#Assignment3
+# Assignment3
 
 Fork is done and return value stored.
 If -1, perror sent.
@@ -44,7 +41,7 @@ Else if we are in the parent process, we just wait for the single child, then pr
 As a result we see execution of echo with the string then the print by the parent.
 
 
-#Assignment4
+# Assignment4
 
 This is very similar to assignment 3, with one change: one more argument is added for the exec. As arguments we give the path of the binary grep, the name of the binary to be executed, the word to search (in our case "Diffie"), and the last argument is the file in which we have to search for the word. The arguments are again terminated with NULL.
 The parent waits for the only child and does the print.
