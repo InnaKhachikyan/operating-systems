@@ -50,4 +50,24 @@ Let's say we have a program which allocated dynamically memory, which has to be 
 So, it can be useful for freeing memory, nullifyiing the pointers, closing files (flushing buffers), closing database connections, network sockets etc. both in case of successful and unexpected (something went wrong) termination of the program.
 
 
+# Assignment 4
 
+Fork is done, with error handling. The child process prints and exits with status0.
+The parent process forks again with error handling. 
+The second child tries to open non-existing file, so perror is thrown. 
+I intentionally wrote opening of non-existent file. 
+First, I used kill with self pid, to observe difference of the outputs in the main when checking the children's status (in that case exit(23) was not necessary) and the printing was "Something went wrong and the exit status 0). But then changed to simple exit(23).
+
+Parent process waits for both children (again with error handling).
+Afterwards, for each child it checks if WIFEXITED(status) is true, prints exited normally with status number. Else, it prints "Something went wrong" together with the exit status of the child.
+So for the first child it should print, exited normally with exit status 42, and for the second child: exited normally with exit status 23, although perror with message intantional error is thrown first.
+
+
+# Assignment 5
+
+First I wrote a program where the child exited, while the parent was sleeping. So, the child remained in the zombie state: the parent is still alive, however the exit status is not read yet.
+Doing htop and looking at the pid of the process (we may see it printing on the terminal and on htop list), we may see Z under the state column.
+I commented this part, you may uncomment and check whether it works correctly.
+Then I wrote with the second logic given: parent calls wait(&status), if the wait return value is -1, perror, else we try to get the exit status of the child if it exited normally.
+
+wait()/waitpid() prevent zombies because they collect the child’s exit status and tell the kernel it can remove the child’s zombie entry from the process table. Without a wait, the child’s status stays there (state Z) until the parent reaps it or exits.

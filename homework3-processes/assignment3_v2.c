@@ -31,7 +31,7 @@ void cleanup_for_2(void) {
 
 int main(void) {
 
-	printf("***** ASSIGNMENT 3 *****\n");
+	printf("***** ASSIGNMENT 3 v2 *****\n");
 
 	alloc0 = (int*)malloc(sizeof(int)*SIZE);
 	if(!alloc0) {
