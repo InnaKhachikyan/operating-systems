@@ -1,11 +1,3 @@
-/* Assignment 5: Handling Zombie Processes
-Objective: Demonstrate zombie processes and prevent them from using wait().
-Task:
-Write a program that creates a child process but does not use wait() in the parent.
-Use the  htop, top  or ps commands to observe the child process becoming a zombie.
-Modify the program to use wait() in the parent to prevent the child from becoming a zombie.
-Explain how wait() and waitpid() prevent zombie processes. */
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdint.h>
