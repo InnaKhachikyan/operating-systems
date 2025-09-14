@@ -26,7 +26,10 @@ int main(void) {
 	}
 	else {
 		wait_pid = wait(&estatus_child1);
-
+		if(wait_pid == -1) {
+			perror("Wait failed");
+			return 1;
+		}
 	}
 		
 	pid_t fork_pid2 = fork();
@@ -43,6 +46,10 @@ int main(void) {
 	else {
 		printf("Parent waits for the second child\n");
 		wait_pid2 = waitpid(fork_pid2, &estatus_child2,0);
+		if(wait_pid2 == -1) {
+			perror("Waitpid failed");
+			return 1;
+		}
 		printf("After waitpid\n");
 		if(WIFEXITED(estatus_child1)) {
 			printf("First child with pid %jd exited normally with status %d\n", (intmax_t)wait_pid, WEXITSTATUS(estatus_child1));
