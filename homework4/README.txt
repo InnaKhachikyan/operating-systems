@@ -1,8 +1,8 @@
-# Differences between the disassembly of main.o, math_utils.o and executable square_prog
+Differences between the disassembly of main.o, math_utils.o and executable square_prog
 
 OUtputs:
 
-## objdump -d main.o
+objdump -d main.o
 
 main.o:     file format elf64-x86-64
 
@@ -29,7 +29,7 @@ Disassembly of section .text:
   3e:	c9                   	leave  
   3f:	c3                   	ret    
 
-## objdump -d math_utils.o
+objdump -d math_utils.o
 
 math_utils.o:     file format elf64-x86-64
 
@@ -47,7 +47,7 @@ Disassembly of section .text:
   12:	c3                   	ret    
 
 
-## objdump -d square_prog 
+objdump -d square_prog 
 
 square_prog:     file format elf64-x86-64
 
@@ -209,19 +209,19 @@ In the disassembly of the executable file we see that the main function is under
 After the main we may see the calls to the other functions with their addresses (square and printf). The text segment starts with the start at address 000...00001060 where the actual main function is called from the libc. The addresses in the executable file are not relocatable anymore. When the program starts, it will have base address let's say 0xFFFF0000, then main will be at address base addr + main offset = 0xFFFF1149, similarly square will be at the address 0xFFFF1189.
 
 
-# Differences of nm of the three files
+Differences of nm of the three files
 
 Outputs of the commands:
 
-## nm main.o
+nm main.o
 0000000000000000 T main
                  U printf
                  U square
 
-## nm math_utils.o
+nm math_utils.o
 0000000000000000 T square
 
-## nm square_prog 
+nm square_prog 
 0000000000003dc8 d _DYNAMIC
 0000000000003fb8 d _GLOBAL_OFFSET_TABLE_
 0000000000002000 R _IO_stdin_used
@@ -264,11 +264,11 @@ nm math_utils.o shows only the function square in the text segment.
 In nm square_prog there are some segments unfamiliar to me, but what we know is that the main is in the text segment, as well as the square function, printf is still undefined as it will be loaded dynamically, libc start is also undefined, there are also some names in the data and bss segments, but I don't know what they mean. What seemed stranage to me that square and printf are both from outer sources, howver square is in the text segment, but printf is undefined. I assume when we linked the two files together with gcc main.o math_utils.o -o square_prog this way the actual implementation of the function was put in the text segment.
 
 
-# readelf
+readelf
 
 Output:
 
-## readelf -h main.o
+readelf -h main.o
 ELF Header:
   Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
   Class:                             ELF64
@@ -290,7 +290,7 @@ ELF Header:
   Number of section headers:         14
   Section header string table index: 13
 
-## readelf -h math_utils.o
+readelf -h math_utils.o
 ELF Header:
   Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
   Class:                             ELF64
@@ -312,7 +312,7 @@ ELF Header:
   Number of section headers:         12
   Section header string table index: 11
 
-## readelf -h square_prog 
+readelf -h square_prog 
 ELF Header:
   Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
   Class:                             ELF64
@@ -341,7 +341,7 @@ When we have the program base address +0x1060 will be the entry point.
 
 Outputs of readelf -S:
 
-## readelf -S main.o
+readelf -S main.o
 There are 14 section headers, starting at offset 0x2c0:
 
 Section Headers:
@@ -382,7 +382,7 @@ Key to Flags:
   D (mbind), l (large), p (processor specific)
 
 
-## readelf -S math_utils.o
+readelf -S math_utils.o
 There are 12 section headers, starting at offset 0x1d8:
 
 Section Headers:
@@ -419,7 +419,7 @@ Key to Flags:
   D (mbind), l (large), p (processor specific)
 
 
-## readelf -S square_prog 
+readelf -S square_prog 
 There are 31 section headers, starting at offset 0x36e0:
 
 Section Headers:
