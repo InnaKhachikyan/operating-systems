@@ -7,7 +7,10 @@ int main(void) {
 
 	while(1) {
 		printf("Please, enter a number: ");
-		scanf("%d", &user_input);
+		if(scanf("%d", &user_input) != 1) {
+			printf("Not a number\n");
+			return 1;
+		}
 
 		if(user_input <= 0) {
 			printf("Invalid input\n");
