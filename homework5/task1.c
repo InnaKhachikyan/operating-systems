@@ -25,9 +25,12 @@ int main(void) {
 		return 1;
 	}
 
-	printf("Please, enter %d integers\n", user_input);
+	printf("Please, enter %d integers: ", user_input);
 	for(int i = 0; i < user_input; i++) {
-		scanf("%d", &arr[i]);
+		if(scanf("%d", &arr[i]) != 1) {
+			printf("Not a number\n");
+			return 1;
+		}
 	}
 	
 	int sum = 0;
@@ -39,4 +42,5 @@ int main(void) {
 
 	free(arr);
 	arr = NULL;
+	return 0;
 }

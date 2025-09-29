@@ -20,3 +20,13 @@ Printing the average with high precision.
 And in the end I free() the memory and nullify the dangling pointer.
 
 
+# Task 3
+
+Dynamic allocation with the corresponding check. 10 values scaned, values written in the array.
+arr resized with the help of realloc(). 
+The array values printed after realloc.
+
+
+Maybe I will add logic to check whether the user has inputted sufficient values.
+
+
