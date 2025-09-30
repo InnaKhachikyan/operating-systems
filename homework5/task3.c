@@ -13,11 +13,18 @@ int main(void) {
 	for(int i = 0; i < 10; i++) {
 		if(scanf("%d", &arr[i]) != 1) {
 			printf("Not a number\n");
+			free(arr);
+			arr = NULL;
 			return 1;
 		}
 	}
 
 	arr =(int*)realloc(arr, sizeof(int)*5);
+	if(arr == NULL) {
+		perror("realloc");
+		free(arr);
+		return 1;
+	}
 
 	printf("Array after resizing: ");
 	for(int i = 0; i < 5; i++) {
