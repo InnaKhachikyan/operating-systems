@@ -40,4 +40,13 @@ Then allocate dynamically memory.
 Prompt message again asking from the user NEW_SIZE-SIZE messages, scanning them, storing in the array, and printing.
 In the end there is no need to free anything manually as after return 0 the registered free_mem function will free all the allocated memory and nullify the dangling pointers.
 
+# Task 5
+
+Prompting message, reading input number from the user. 
+Dynamic allocation with check whether it was successful.
+Prompting message again, reading inputs and storing in the array of doubles.
+With a single loop calculating the highest and the lowest grades, printing out.
+In the end freeing the memory and nullifying the pointer.
+
+
 
