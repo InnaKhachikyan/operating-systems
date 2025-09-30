@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_GROUP_SIZE 40
 int main(void) {
 
 	int number_of_students;
@@ -8,6 +9,11 @@ int main(void) {
 	printf("Enter the number of students: ");
 	if(scanf("%d", &number_of_students) != 1) {
 		printf("Reading input failed\n");
+		return 1;
+	}
+
+	if(number_of_students <= 0 || number_of_students > MAX_GROUP_SIZE) {
+		printf("Invalid number of students\n");
 		return 1;
 	}
 
@@ -21,6 +27,12 @@ int main(void) {
 	for(int i = 0; i < number_of_students; i++) {
 		if(scanf("%lf", &grades[i]) != 1) {
 			printf("Reading input failed\n");
+			free(grades);
+			grades = NULL;
+			return 1;
+		}
+		if(grades[i] < 0 || grades[i] > 100) {
+			printf("Invalid grade input\n");
 			free(grades);
 			grades = NULL;
 			return 1;

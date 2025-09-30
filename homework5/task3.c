@@ -9,7 +9,7 @@ int main(void) {
 		return 1;
 	}
 	
-	printf("Please enter 10 values: ");
+	printf("Enter 10 integers: ");
 	for(int i = 0; i < 10; i++) {
 		if(scanf("%d", &arr[i]) != 1) {
 			printf("Not a number\n");
@@ -23,6 +23,7 @@ int main(void) {
 	if(arr == NULL) {
 		perror("realloc");
 		free(arr);
+		arr = NULL;
 		return 1;
 	}
 

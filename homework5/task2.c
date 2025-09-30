@@ -35,11 +35,13 @@ int main(void) {
 	for(int i = 0; i < user_input; i++) {
 		if(scanf("%d", &arr[i]) != 1) {
 			printf("Not a number\n");
+			free(arr);
+			arr = NULL;
 			return 1;
 		}
 	}
 	
-	int sum = 0;
+	long long sum = 0;
 	for(int i = 0 ; i < user_input; i++) {
 		sum += *(arr + i);
 	}

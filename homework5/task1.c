@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 int main(void) {
 
@@ -12,7 +13,7 @@ int main(void) {
 			return 1;
 		}
 
-		if(user_input <= 0) {
+		if(user_input <= 0 || user_input > SIZE_MAX/sizeof(int)) {
 			printf("Invalid input\n");
 			continue;
 		}
@@ -29,16 +30,17 @@ int main(void) {
 	for(int i = 0; i < user_input; i++) {
 		if(scanf("%d", &arr[i]) != 1) {
 			printf("Not a number\n");
+			free(arr);arr = NULL;
 			return 1;
 		}
 	}
 	
-	int sum = 0;
+	long long sum = 0;
 	for(int i = 0 ; i < user_input; i++) {
 		sum += *(arr + i);
 	}
 
-	printf("The sum is %d\n", sum);
+	printf("The sum is %lld\n", sum);
 
 	free(arr);
 	arr = NULL;

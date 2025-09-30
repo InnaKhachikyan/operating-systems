@@ -52,11 +52,13 @@ int main(void) {
 		printf("%s\n", ptr_str[i]);
 	}
 
-	ptr_str = (char**)realloc(ptr_str, sizeof(char*)*(NEW_SIZE));
-	if(ptr_str == NULL) {
+	char **new_ptr = (char**)realloc(ptr_str, sizeof(char*)*(NEW_SIZE));
+	if(new_ptr == NULL) {
 		perror("realloc");
 		return 1;
 	}
+	ptr_str = new_ptr;
+
 	for(int i = SIZE; i < NEW_SIZE; i++) {
 		ptr_str[i] = NULL;
 	}
