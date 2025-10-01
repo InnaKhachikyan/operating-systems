@@ -7,4 +7,5 @@ all:
 	gcc task3.c -o task3
 	gcc task4.c -o task4
 	gcc task5.c -o task5
-
+	gcc task6.c -o task6
+	gcc task7.c -o task7

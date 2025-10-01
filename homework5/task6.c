@@ -4,6 +4,9 @@
 #include <malloc.h>
 #include <stdint.h>
 
+#define SIZE 18
+#define NEW_SIZE 40
+
 void* my_realloc(void* ptr, size_t new_size) {
 
 	if(ptr == NULL) {
@@ -41,7 +44,6 @@ void* my_realloc2(void* ptr, size_t new_size) {
                 return NULL;
         }
 
-        //size_t old_size = (size_t)*((uint8_t*)(ptr-8));
         size_t old_size;
         memcpy(&old_size, (uint8_t*)(ptr) - 8, 8);
         old_size = old_size & (~0x07);
@@ -63,16 +65,16 @@ void* my_realloc2(void* ptr, size_t new_size) {
 
 int main(void) {
 
-	int *ptr = (int*)malloc(sizeof(int)*16);
+	int *ptr = (int*)malloc(sizeof(int)*SIZE);
 	if(!ptr) {
 		perror("malloc");
 		return 1;
 	}
-	for(int i = 0; i < 16; i++) {
+	for(int i = 0; i < SIZE; i++) {
 		ptr[i] = i;
 	}
 
-	int *tmp = my_realloc(ptr, 32 * sizeof(int));
+	int *tmp = my_realloc2(ptr, NEW_SIZE * sizeof(int));
 	if(!tmp) {
 		printf("reallocation failed");
 		return 1;
@@ -80,11 +82,11 @@ int main(void) {
 
 	ptr = tmp;
 
-	for(int i = 16; i < 32; i++) {
+	for(int i = SIZE; i < NEW_SIZE; i++) {
 		ptr[i] = i;
 	}
 
-	for(int i = 0; i < 32; i++) {
+	for(int i = 0; i < NEW_SIZE; i++) {
 		printf("ptr[%d] %d\n", i, ptr[i]);
 	}
 
