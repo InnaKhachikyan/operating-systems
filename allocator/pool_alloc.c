@@ -1,4 +1,9 @@
 #include <stdio.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 #define	MIN_EXP 4
 #define MAX_EXP 16
@@ -9,21 +14,10 @@ struct mem_node {
 	struct mem_node *next;
 };
 
-static struct mem_node pool[CLASSES];
+static struct mem_node *free_lists[CLASSES];
 
 static inline int is_pow_2(size_t size) {
-	return (n & (n-1) == 0);
-}
-
-size_t pow(size_t base, size_t exp) {
-	if(exp == 0) {
-		return 1;
-	}
-	size_t half = pow(base, exp/2);
-	if(exp % 2 == 1) {
-		return base * half * half;
-	}
-	return half * half;
+	return (size & (size-1) == 0);
 }
 
 static inline int ceil_log2(size_t size) {
@@ -44,20 +38,35 @@ void init_slab(int exponent) {
 		(exponent <= 11) ? 32 :
 		(exponent <= 13) ? 16 : 8;
 
-	size_t length = num_blocks * pow(2, exponent);
-	void *ptr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	// I should prepare nodes for blocks of memory to make a linked list and add in the array [exponent]
+	size_t num_bytes = (size_t)1ULL << exponent;
+	size_t length = num_blocks * num_bytes;
+	void *slab = mmap(NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	if(slab == MAP_FAILED) {
+		perror("mmap");
+		return;
+	}
+	uint8_t *pointer = (uint8_t*)slab;
+
+	struct mem_node *next_node = NULL;
+	struct mem_node *current = NULL;
+	for(int i = 0; i < num_blocks; i++) {
+		current->ptr = (uint8_t*)pointer + i*num_bytes;
+		current->next = next_node;
+		current = next_node;
+		next_node = NULL;
+	}
+
 
 }
 
 
-void* my_alloc(size_t size) {
-	if(size <= 0) {
+void* p_alloc(size_t size) {
+	if(size == 0) {
 		return NULL;
 	}
 	
 	int exponent = ceil_log2(size);
-	if(pool[exponent] == NULL) {
+	if(free_lists[exponent] == NULL) {
 		init_slab(exponent);
 	}
 	
