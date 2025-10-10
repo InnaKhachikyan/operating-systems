@@ -10,6 +10,7 @@
 #define CLASSES (MAX_EXP - MIN_EXP + 1)
 
 struct mem_node {
+	int index;
 	void *ptr;
 	struct mem_node *next;
 };
@@ -17,19 +18,27 @@ struct mem_node {
 static struct mem_node *free_lists[CLASSES];
 
 static inline int is_pow_2(size_t size) {
-	return (size & (size-1) == 0);
+	if(size != 0) {
+		return (size & (size-1) == 0);
+	}
+	return 0;
 }
 
 static inline int ceil_log2(size_t size) {
-	int index = 0;
 	if(size <= 1) {
-		return index;
+		return 1;
 	}
+	int index = 0;
 	if(is_pow_2(size) == 1) {
 		index++;
 	}
-	index += 64 - __builtin_clzll(size - 1);
-	return index; //GCC builtin function to count leading zeros in 64-bit machine
+	const int size_ll = 8 * sizeof(unsigned long long);
+	index += size_ll - __builtin_clzll(size - 1);
+	return index; 
+}
+
+static inline int count_idx(int exponent) {
+	return exponent - MIN_EXP;
 }
 
 void init_slab(int exponent) {
@@ -46,18 +55,24 @@ void init_slab(int exponent) {
 		return;
 	}
 	uint8_t *pointer = (uint8_t*)slab;
+	
+	struct mem_node head = {numblocks, pointer, pointer + num_bytes};
+	struct mem_node *current = &head;
+	struct mem_node *next_node;
 
-	struct mem_node *next_node = NULL;
-	struct mem_node *current = NULL;
 	for(int i = 0; i < num_blocks; i++) {
-		current->ptr = (uint8_t*)pointer + i*num_bytes;
-		current->next = next_node;
+		next_node->index = (current->index) - 1;
+		next_node->ptr = (current->ptr) + num_bytes;
+		next_node->next = (next_node->ptr) + num_bytes;
+		
 		current = next_node;
-		next_node = NULL;
 	}
-
-
+	
+	int index = count_idx(exponent);
+	free_lists[index] = head;
 }
+
+
 
 
 void* p_alloc(size_t size) {
