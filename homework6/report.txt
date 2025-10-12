@@ -1,6 +1,42 @@
 Assignment 1
 
 The alignment: each type's address is a multiple of its type size, so each of the varibales is aligned.
-One more interesting observation about the addresses: although we initialized those with the order int->char->double->short, from the addresses we may see that they were put in the stack frame in different order double->int->short->char (stack frame grows downward, the greates address of the four variables is put first). So, I think the compiler arranged the stack frame this way to satisfy alignment and minimize padding.
+One more interesting observation about the addresses: although we initialized those with the order int->char->double->short, from the addresses we may see that they were put in the stack frame in different order double->int->short->char (stack frame grows downward, the greates address of the four variables is put first). As far as I understand the C standard does not guarantee any relative order for independent local variables. The compiler is free to place them anywhere in the frame (and even keep some in registers unless we take their address). So, I think the compiler arranged the stack frame this way to satisfy alignment and minimize padding.
 
+
+Assignment 2
+
+str 1 {char, int double}
+str 2 {double, int, char}
+str 3 {int, double, char}
+
+The least number of padding in the C struct is done when the types are organized either in increasing order of their sizes (char->int->double) OR in decreasing order of their sizes (double->int->char).
+So str1 and str2 have the least possible padding, and aligned properly.
+In str1 we have 1 byte of char, then 3 bytes of padding, then int, then double, which makes 16 bytes in total.
+In str2 we have 8 bytes double, then 4 bytes int, then 1 byte char, then 3 bytes padding, 16 byte sin total.
+
+I added str3 just to demo what happens when the fields inside the struct are unordered (first increasing then decreasing). Its size became 24 (in contrast with str1 and str2 which have size 16) although it actually stores the same types.
+The thing is that in the struct of C compiler has no right to reorganize those or put however it thinks it's optimal. So it just puts in the order those are defined aligning those correspondingly.
+
+In str3 int address is aligned to multiple of its type alignment requirement, then double should be aligned to multiple of its type alignment requirement (multiple of _Alignof(double)). So we have int (4 bytes) then 4 bytes of padding, then double (8 bytes), then char, then 7 bytes of padding, as the struct itself has alignment max(_Alignof(int), _Alignof(char), _Alignof(double)).
+
+To see that visually, I printed the offset of all the variables.
+
+Output of the program:
+
+ ***** STRUCT 1 ***** 
+Size of the str1 is 16 
+Address of char a in str1: 0x7ffcbe36e120 
+Address of int b in str1: 0x7ffcbe36e124 
+Address of double c in str1: 0x7ffcbe36e128 
+ ***** STRUCT 2 ***** 
+Size of the str2 is 16 
+Address of double a in str1: 0x7ffcbe36e130 
+Address of int b in str1: 0x7ffcbe36e138 
+Address of char c in str1: 0x7ffcbe36e13c 
+ ***** STRUCT 3 ***** 
+Size of the str3 is 24 
+Address of int a in str1: 0x7ffcbe36e140 
+Address of double b in str1: 0x7ffcbe36e148 
+Address of char c in str1: 0x7ffcbe36e150 
 
