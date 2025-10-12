@@ -1,0 +1,6 @@
+Assignment 1
+
+The alignment: each type's address is a multiple of its type size, so each of the varibales is aligned.
+One more interesting observation about the addresses: although we initialized those with the order int->char->double->short, from the addresses we may see that they were put in the stack frame in different order double->int->short->char (stack frame grows downward, the greates address of the four variables is put first). So, I think the compiler arranged the stack frame this way to satisfy alignment and minimize padding.
+
+
