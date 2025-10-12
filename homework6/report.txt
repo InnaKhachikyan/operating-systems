@@ -3,6 +3,21 @@ Assignment 1
 The alignment: each type's address is a multiple of its type size, so each of the varibales is aligned.
 One more interesting observation about the addresses: although we initialized those with the order int->char->double->short, from the addresses we may see that they were put in the stack frame in different order double->int->short->char (stack frame grows downward, the greates address of the four variables is put first). As far as I understand the C standard does not guarantee any relative order for independent local variables. The compiler is free to place them anywhere in the frame (and even keep some in registers unless we take their address). So, I think the compiler arranged the stack frame this way to satisfy alignment and minimize padding.
 
+OUtput:
+
+Size of the int type is: 4 bytes
+Size of the char type is: 1 bytes
+Size of the double type is: 8 bytes
+Size of the short type is: 2 bytes
+Address of the int type is: 0x7ffe48033e4c
+Address of the char type is: 0x7ffe48033e49
+Address of the double type is: 0x7ffe48033e50
+Address of the short type is: 0x7ffe48033e4a
+Int is aligned to multiple of 4 
+Char is aligned to multiple of 1 
+Double is aligned to multiple of 8 
+Short is aligned to multiple of 2 
+
 
 Assignment 2
 
@@ -39,4 +54,52 @@ Size of the str3 is 24
 Address of int a in str1: 0x7ffcbe36e140 
 Address of double b in str1: 0x7ffcbe36e148 
 Address of char c in str1: 0x7ffcbe36e150 
+
+
+Assignment 3
+
+Important note: I wrote all the experiments in one file restoreing the alignment configuration after each struct, so that all the outputs of the experiments are seen when running the program.
+I also implemented a "safer version".
+This topic was necessary for my project so I did some reading: using pragma pack() is unsafe for header files, as all the programs that include that header get that configuration of the packing, however, if packing is done via push and pop, it is not extended to the files that include that header.
+
+So we have str1 struct which has the types in sorted order (increasing), so the padding is as few as possible: char, then 3 bytes padding, then int, then double, total: 16 bytes.
+
+str_packed1 is done with #pragma pack(1) which tells the compiler no alignment necessary, keep the types tightly.
+Then we restore that configuration with #pragma pack()
+
+str_packed2 is done with #pragma pack(2) which tells the compiler to do the allignment to multiple of 2, so, if the type alignment requirement is less (like char which is 1), it will keep less, but if the type alignment requirement is more (like int, or double) it will decrease their alignment requirement to be multiple of 2.
+
+The same with str_packed4 which just changes the multiple of 2 to multiple of 4.
+
+Result:
+str1: char + 3 bytes padding + int + double = 16 bytes
+
+str_packed1: char + int + double = 1 + 4 + 8 = 13 bytes
+
+str_packed2: char  + 1 byte padding + int + double = 1 + 1 + 4 + 8 = 14 bytes
+
+str_packed4: char + 3 bytes padding + int + double = 1 + 3 + 4 + 8 = 16 bytes
+
+Output:
+
+ ***** UNPACKED STRUCT ***** 
+Size of struct str1 without packing is 16 
+Address of char type is 0x7ffcd2beb580
+Address of int type is 0x7ffcd2beb584
+Address of double type is 0x7ffcd2beb588
+ ***** PACK(1) STRUCT ***** 
+Size of struct str_packed1 with pack(1) is 13 
+Address of char type is 0x7ffcd2beb565
+Address of int type is 0x7ffcd2beb566
+Address of double type is 0x7ffcd2beb56a
+ ***** PACK(2) STRUCT ***** 
+Size of struct str_packed2 with pack(2) is 14 
+Address of char type is 0x7ffcd2beb572
+Address of int type is 0x7ffcd2beb574
+Address of double type is 0x7ffcd2beb578
+ ***** PACK(4) STRUCT ***** 
+Size of struct str_packed4 with pack(4) is 16 
+Address of char type is 0x7ffcd2beb590
+Address of int type is 0x7ffcd2beb594
+Address of double type is 0x7ffcd2beb598
 
