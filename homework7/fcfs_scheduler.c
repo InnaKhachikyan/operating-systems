@@ -39,7 +39,10 @@ void fcfs_scheduler(proc *arr) {
 int main(void) {
 	
 	printf("Enter the number of processes: ");
-	scanf("%d", &proc_count);
+	if(scanf("%d", &proc_count) != 1) {
+		printf("scan failed\n");
+		return 1;
+	}
 	printf("\n");
 	processes = (proc*)malloc(sizeof(proc)*proc_count);
 	if(!processes) {
@@ -51,7 +54,10 @@ int main(void) {
 		proc new_proc;
 		new_proc.pid = i;
 		printf("Enter the arrival time and burst time for process %d: ", i+1);
-		scanf("%d %d", &(new_proc.arrival_time), &(new_proc.burst_time));
+		if( (scanf("%d %d", &(new_proc.arrival_time), &(new_proc.burst_time))) != 2) {
+			printf("Scan failed\n");
+			return 1;
+		}
 		processes[i] = new_proc;
 	}
 
