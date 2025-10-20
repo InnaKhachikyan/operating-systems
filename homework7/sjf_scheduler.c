@@ -19,21 +19,71 @@ static void swap(proc *a, proc *b) {
 	*b = temp;
 }
 
-static void select_sort_proc_burst_time(proc *arr, int n) {
-	for(int i = 0; i < n-1; i++) {
+static void select_sort_proc_burst_time(proc *arr, int start, int n) {
+        for(int i = start; i < n-1; i++) {
+                int min_idx = i;
+                for(int j = i + 1; j < n; j++) {
+                        if(arr[j].burst_time < arr[min_idx].burst_time) {
+                                min_idx = j;
+                        }
+                }
+                swap(&arr[i], &arr[min_idx]);
+        }
+}
+
+static int select_sort_proc_arrival_time(proc *arr, int current_time, int start, int n) {
+	int arrived = 0;
+	for(int i = start; i < n-1; i++) {
 		int min_idx = i;
 		for(int j = i + 1; j < n; j++) {
-			if(processes[j].burst_time < processes[min_idx].burst_time) {
+			if(arr[j].arrival_time < arr[min_idx].arrival_time) {
 				min_idx = j;
 			}
 		}
-		swap(&processes[i], &processes[min_idx]);
+		swap(&arr[i], &arr[min_idx]);
+		if(arr[i].arrival_time <= current_time) {
+			arrived++;
+		}
 	}
+	return arrived;
 }
 
 void sjf_scheduler(proc *arr) {
-	select_sort_proc_burst_time(arr, proc_count);
-	//will simulate the running of the process: fork or toy-processes?
+        int current_time = 0;
+        for(int i = 0; i < proc_count; i++) {
+		int arrived = select_sort_proc_arrival_time(arr, current_time, i, proc_count);
+		select_sort_proc_burst_time(arr, i, i + arrived);
+		if(arr[i].arrival_time > current_time) {
+			current_time = arr[i].arrival_time;
+		}
+                arr[i].waiting_time = current_time - arr[i].arrival_time;
+                arr[i].response_time = arr[i].waiting_time;
+                arr[i].turnaround_time = arr[i].waiting_time + arr[i].burst_time;
+                current_time += arr[i].burst_time;
+        }
+}
+
+void print_gantt_chart(proc *arr) {
+        int wait_total = 0;
+        int response_total = 0;
+        int tat_total = 0;
+        printf(" === SJF Gantt chart === \n");
+        printf("PID     AT     BT     WT     TAT     RT\n");
+        for(int i = 0; i < proc_count; i++) {
+                printf("%d       %d      %d      %d      %d       %d\n", arr[i].pid, arr[i].arrival_time, arr[i].burst_time, arr[i].waiting_time, arr[i].turnaround_time, arr[i].response_time);
+                printf("\n");
+                wait_total += arr[i].waiting_time;
+                response_total += arr[i].response_time;
+                tat_total += arr[i].turnaround_time;
+        }
+
+        double wait_average = (double)wait_total/(double)proc_count;
+        double response_average = (double)response_total/(double)proc_count;
+        double tat_average = (double)tat_total/(double)proc_count;
+
+        printf("Average Waiting Time: %f\n", wait_average);
+        printf("Average Response Time: %f\n", response_average);
+        printf("Average Turnaround Time: %f\n", tat_average);
 }
 
 int main(void) {
@@ -62,6 +112,8 @@ int main(void) {
         }
 
         sjf_scheduler(processes);
+
+	print_gantt_chart(processes);
 
         free(processes);
         processes = NULL;
