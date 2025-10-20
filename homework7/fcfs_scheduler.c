@@ -69,34 +69,37 @@ void print_gantt_chart(proc *arr) {
 	printf("Average Turnaround Time: %f\n", tat_average);
 }
 
+void create_processes() {
+	 printf("Enter the number of processes: ");
+        if(scanf("%d", &proc_count) != 1) {
+                printf("scan failed\n");
+                exit(1);
+        }
+        printf("\n");
+        processes = (proc*)malloc(sizeof(proc)*proc_count);
+        if(!processes) {
+                perror("malloc");
+                exit(1);
+        }
+
+        for(int i = 0; i < proc_count; i++) {
+                proc new_proc;
+                new_proc.pid = i+1;
+                printf("Enter the arrival time and burst time for process %d: ", i+1);
+                if( (scanf("%d %d", &(new_proc.arrival_time), &(new_proc.burst_time))) != 2) {
+                        printf("Scan failed\n");
+                        exit(1);
+                }
+                new_proc.turnaround_time = 0;
+                new_proc.waiting_time = 0;
+                new_proc.response_time = 0;
+                processes[i] = new_proc;
+        }
+}
 
 int main(void) {
 	
-	printf("Enter the number of processes: ");
-	if(scanf("%d", &proc_count) != 1) {
-		printf("scan failed\n");
-		return 1;
-	}
-	printf("\n");
-	processes = (proc*)malloc(sizeof(proc)*proc_count);
-	if(!processes) {
-		perror("malloc");
-		return 1;
-	}
-
-	for(int i = 0; i < proc_count; i++) {
-		proc new_proc;
-		new_proc.pid = i+1;
-		printf("Enter the arrival time and burst time for process %d: ", i+1);
-		if( (scanf("%d %d", &(new_proc.arrival_time), &(new_proc.burst_time))) != 2) {
-			printf("Scan failed\n");
-			return 1;
-		}
-		new_proc.turnaround_time = 0;
-		new_proc.waiting_time = 0;
-		new_proc.response_time = 0;
-		processes[i] = new_proc;
-	}
+	create_processes();
 
 	fcfs_scheduler(processes);
 
