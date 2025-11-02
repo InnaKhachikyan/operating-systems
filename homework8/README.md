@@ -33,3 +33,17 @@ We read the file contents in the buffer with the new_size of the file, and print
 
 In the end the file is closed, allocted memory freed, dangling pointer nullified.
 
+
+# reverse file reader
+
+src_file will store the name of the filed scanned from the unser input.
+Scan done with the corresponding check and error handling.
+
+The file is opened with the corresponding check and error handling.
+
+file_size is counted with lseek SEEK_END flag, done with corresponding check and error handling.
+
+If any step is failed the file is closed before return.
+
+A single char buffer declared, in a loop lseek is put -1 byte from the end, decrementing the cursor by one byte on each iteration; each byte is read, then written in the standard output one by one with the corresponding checks and error handling. If the file is empty, the loop will simply not execute and the code will jump to the line where \n is written to the standard output.
+
