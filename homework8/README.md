@@ -47,3 +47,21 @@ If any step is failed the file is closed before return.
 
 A single char buffer declared, in a loop lseek is put -1 byte from the end, decrementing the cursor by one byte on each iteration; each byte is read, then written in the standard output one by one with the corresponding checks and error handling. If the file is empty, the loop will simply not execute and the code will jump to the line where \n is written to the standard output.
 
+
+# append log.txt
+
+We open log.txt (if there is no such a file, it is created) in write, append mode.
+Get the pid of the process, write it in a string character by character.
+As the 0 pid is always given to the systemd process, I didn't include that edge case to the pid writing.
+taking the mod 10 of the number, we have the last digit of the pid number, write it in the next cell, dividing it by 10, we promote the next digit, to be taken as remainder on the next round.
+In the string now we have the pid but in reversed order, in the for loop then I reverse the order of the digits to get the original pid.
+I also append to the pid the space character.
+pid_buf is written to the file (number of bytes is its length).
+Then we take a single char as buffer, in a loop we read from the user byte by byte and write in the log.txt file while the user is typing, up to the new line character.
+In the end when the user typed new line, the loop breaks, a single new line character is written to the file.
+If the input is empty, the loop will just break and a new line character will be written after the pid.
+
+All the open, write, read operations are done with corresponding checks and error handling.
+
+lseek with SEEK_CUR
+When we open a file, the cursor is typically at the beginning of the file (position 0), even if the file was opened in the append mode (to show that I added a small print in the beginning). However, the OS guarantees that the written bytes will be appended to the existing. Each time we call write (after opening with O_APPEND), the kernel under the hood does lseek with SEEK_END then write operation. So each time before writing anything to the file, OS (to ensure append and not allow overwriting), moves the cursor to the end, then writes to the file.
