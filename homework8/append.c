@@ -6,8 +6,6 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#define LINE_MAX_SIZE 50
-
 int main(void) {
 
 	int fd = open("log.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
