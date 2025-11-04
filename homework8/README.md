@@ -65,3 +65,16 @@ All the open, write, read operations are done with corresponding checks and erro
 
 lseek with SEEK_CUR
 When we open a file, the cursor is typically at the beginning of the file (position 0), even if the file was opened in the append mode (to show that I added a small print in the beginning). However, the OS guarantees that the written bytes will be appended to the existing. Each time we call write (after opening with O_APPEND), the kernel under the hood does lseek with SEEK_END then write operation. So each time before writing anything to the file, OS (to ensure append and not allow overwriting), moves the cursor to the end, then writes to the file.
+
+# sparse.bin
+
+Open and write are done with corresponding checks and error handling. Var cursor is assigned the return value of lseek to check if it was successful. The cursor was at 5 bytes, we moved it 1 MiB forward. Then "END" string is written to the file, with corresponding checks. File closed.
+
+File is reopened, cursor moved to the end of file, the return value (which says at which byte th ecursor is currently) is assigned to var cursor. It is greater than the mentioned value:
+
+Size is 1048584 bytes
+
+Sparse files have holes in them. They logically contain zeros, but phisically don't occupy memory. The file system records some big jump in the file offset, but does not store zero bytes. When we later try to read these bytes the kernel returns 0-s on the run. So we make a 1 MiB file by storing only a few bytesthe rest is some kind of virtual space.
+When we do lseek with 1 MiB the file system records a hole between the write operations. Reading the "holes" returns 0. Only when we write actual data in these wholes memory on disc is allocated.
+Although we have moved the cursor 1MiB further, the du sparse.bin returns 8 Kb only.
+

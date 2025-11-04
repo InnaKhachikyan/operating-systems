@@ -6,3 +6,4 @@ all:
 	gcc file_truncation.c -o trunc
 	gcc reverse_file_reader.c -o reverse_reader
 	gcc append.c -o append
+	gcc sparse_file.c -o sparse
