@@ -78,3 +78,22 @@ Sparse files have holes in them. They logically contain zeros, but phisically do
 When we do lseek with 1 MiB the file system records a hole between the write operations. Reading the "holes" returns 0. Only when we write actual data in these wholes memory on disc is allocated.
 Although we have moved the cursor 1MiB further, the du sparse.bin returns 8 Kb only.
 
+# overwrite with lseek
+
+As too many open/read/write operations are involved, I wrote a helper method cleanup, which would handle errors (throw perror when needed, close the opened file when necessary).
+
+I initialize a fixed string to write to the file.
+Write operation is done with the length of the string, close the file.
+
+newl var counts the number of new lines encountered.
+line_offset keeps track of the offset of the line where we should overwrite (the line containing 4\n).
+buf_offset keeps track of the offset of the file remaining data to write in a temporary buffer, so that after changing the 4\n line, we can write everything back to the file.
+
+In the while loop, read is done byte by byte until 4 new lines encountered, the offsets are updated correspondingly.
+
+After the loop we set the cursor to the buf_offset to store temporarily the remaining part of the file. The size of the read is total_size - buf_offset (as we omit whatever comes before that offset).
+The remaining part of the file is read in a string with the corresponding size.
+Then the cursor is set to the line_offset (where 4\n line starts), we overwrite that line with a new string "100\n", and append the remaining part of the file from buffer temp.
+
+In the end the contents of the file are read byte by byte and written to the stdout by passing fd 1 to write as an argument.
+
