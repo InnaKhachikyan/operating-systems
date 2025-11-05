@@ -1,4 +1,4 @@
-# copy file contents
+# Task 1: copy file contents
 
 I declare 2 buffers to scan the name of the src and destination files from the user.
 Print the prompt message, scan the input of user (max 49 chars), check if not scanned successfully, handle with perror and return 1. Similarly, do for the destination file name.
@@ -12,7 +12,7 @@ The src file is read byte by byte (as the task says to read repeatedly, I didn't
 In the loop the counter keeps the track of the number of total bytes read/copied.
 
 
-# file truncation
+# Task 2: file truncation
 
 File opening in write mode, with CREAT and TRNC flags, with the same access permissions as above.
 If file descriptor is -1, opening failed, handling with perror.
@@ -34,7 +34,7 @@ We read the file contents in the buffer with the new_size of the file, and print
 In the end the file is closed, allocted memory freed, dangling pointer nullified.
 
 
-# reverse file reader
+# Task 3: reverse file reader
 
 src_file will store the name of the filed scanned from the unser input.
 Scan done with the corresponding check and error handling.
@@ -48,7 +48,7 @@ If any step is failed the file is closed before return.
 A single char buffer declared, in a loop lseek is put -1 byte from the end, decrementing the cursor by one byte on each iteration; each byte is read, then written in the standard output one by one with the corresponding checks and error handling. If the file is empty, the loop will simply not execute and the code will jump to the line where \n is written to the standard output.
 
 
-# append log.txt
+# Task 4: append log.txt
 
 We open log.txt (if there is no such a file, it is created) in write, append mode.
 Get the pid of the process, write it in a string character by character.
@@ -66,7 +66,7 @@ All the open, write, read operations are done with corresponding checks and erro
 lseek with SEEK_CUR
 When we open a file, the cursor is typically at the beginning of the file (position 0), even if the file was opened in the append mode (to show that I added a small print in the beginning). However, the OS guarantees that the written bytes will be appended to the existing. Each time we call write (after opening with O_APPEND), the kernel under the hood does lseek with SEEK_END then write operation. So each time before writing anything to the file, OS (to ensure append and not allow overwriting), moves the cursor to the end, then writes to the file.
 
-# sparse.bin
+# Task 5: sparse.bin
 
 Open and write are done with corresponding checks and error handling. Var cursor is assigned the return value of lseek to check if it was successful. The cursor was at 5 bytes, we moved it 1 MiB forward. Then "END" string is written to the file, with corresponding checks. File closed.
 
@@ -78,7 +78,7 @@ Sparse files have holes in them. They logically contain zeros, but phisically do
 When we do lseek with 1 MiB the file system records a hole between the write operations. Reading the "holes" returns 0. Only when we write actual data in these wholes memory on disc is allocated.
 Although we have moved the cursor 1MiB further, the du sparse.bin returns 8 Kb only.
 
-# overwrite with lseek
+# Task 6: overwrite with lseek
 
 As too many open/read/write operations are involved, I wrote a helper method cleanup, which would handle errors (throw perror when needed, close the opened file when necessary).
 
@@ -97,3 +97,14 @@ Then the cursor is set to the line_offset (where 4\n line starts), we overwrite 
 
 In the end the contents of the file are read byte by byte and written to the stdout by passing fd 1 to write as an argument.
 
+
+# Task 7: Byte-Wise File Comparator
+
+2 prompt messages are written on the terminal asking hte user for the files path.
+The paths are read using scanf with corresponding success/fail checks.
+
+We open both files in the read-only mode, declare 2 char buffers for each file.
+In a while loop read byte by byte both files and compare the read bytes.
+If both files reached successfully the end, we print that the files are identical, break the loop and go to the end of main to close the fd-s and return 0.
+If one of them is 0 (the other one not), meaning one file has reached the end, the other not yet, we print the byte tracker var, close the fd-s, return 1.
+If at some point two non-equal chars are written, we, again, print the byte tracker var, close the fd-s and return 1.

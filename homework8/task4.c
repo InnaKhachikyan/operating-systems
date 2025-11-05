@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <inttypes.h>
 
+#define LINE_MAX_SIZE 50
+
 int main(void) {
 
 	int fd = open("log.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -15,7 +17,7 @@ int main(void) {
 	}
 
 	off_t current = lseek(fd, 0, SEEK_CUR);
-	printf("*** Current position: %zd ***\n", current);
+	printf("*** Current position: %jd ***\n", (intmax_t)current);
 
 	char fixed[] = "PID=";
 	if(write(fd, fixed, 4) < 0) {
@@ -76,7 +78,7 @@ int main(void) {
 	}
 
 	current = lseek(fd, 0, SEEK_CUR);
-	printf("*** Updated current position at %zd ***\n", current);
+	printf("*** Updated current position at %jd ***\n", (intmax_t)current);
 
 	close(fd);
 	return 0;

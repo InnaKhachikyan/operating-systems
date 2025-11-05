@@ -2,9 +2,10 @@
 
 
 all:
-	gcc copy_file_contents.c -o copy
-	gcc file_truncation.c -o trunc
-	gcc reverse_file_reader.c -o reverse_reader
-	gcc append.c -o append
-	gcc sparse_file.c -o sparse
-	gcc overwrie_lseek.c -o overwrite
+	gcc task1.c -o task1
+	gcc task2.c -o task2
+	gcc task3.c -o task3
+	gcc task4.c -o task4
+	gcc task5.c -o task5
+	gcc task6.c -o task6
+	gcc task7.c -o task7

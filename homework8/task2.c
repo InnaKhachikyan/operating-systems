@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 int main(void) {
 
@@ -33,7 +34,7 @@ int main(void) {
 		return 1;
 	}
 
-	printf("Size of file is %jd\n", file_size);
+	printf("Size of file is %jd\n", (intmax_t)file_size);
 
 	if(ftruncate(fd, 10) < 0) {
 		perror("ftruncate");
@@ -53,7 +54,7 @@ int main(void) {
 		return 1;
 	}
 
-	printf("File new size is %jd\n", new_size);
+	printf("File new size is %jd\n", (intmax_t)new_size);
 
 	if(lseek(fd, 0, SEEK_SET) < 0) {
 		perror("lseek");
