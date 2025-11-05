@@ -1,3 +1,8 @@
+/*
+lseek with SEEK_CUR
+When we open a file, the cursor is typically at the beginning of the file (position 0), even if the file was opened in the append mode (to show that I added a small print in the beginning). However, the OS guarantees that the written bytes will be appended to the existing. Each time we call write (after opening with O_APPEND), the kernel under the hood does lseek with SEEK_END then write operation. So each time before writing anything to the file, OS (to ensure append and not allow overwriting), moves the cursor to the end, then writes to the file.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
