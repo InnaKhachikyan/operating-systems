@@ -53,6 +53,10 @@ int main(void) {
 			return cleanup("read", fd);
 		}
 		
+		if(read_bytes == 0) {
+			break;
+		}
+
 		buf_offset++;
 		if(buffer == '\n') {
 			newl++;
