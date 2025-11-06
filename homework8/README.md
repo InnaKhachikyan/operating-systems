@@ -97,14 +97,17 @@ Then the cursor is set to the line_offset (where 4\n line starts), we overwrite 
 
 In the end the contents of the file are read byte by byte and written to the stdout by passing fd 1 to write as an argument.
 
-
 # Task 7: Byte-Wise File Comparator
 
 2 prompt messages are written on the terminal asking hte user for the files path.
 The paths are read using scanf with corresponding success/fail checks.
 
 We open both files in the read-only mode, declare 2 char buffers for each file.
-In a while loop read byte by byte both files and compare the read bytes.
-If both files reached successfully the end, we print that the files are identical, break the loop and go to the end of main to close the fd-s and return 0.
-If one of them is 0 (the other one not), meaning one file has reached the end, the other not yet, we print the byte tracker var, close the fd-s, return 1.
-If at some point two non-equal chars are written, we, again, print the byte tracker var, close the fd-s and return 1.
+Read tthem in fixed-size (CHUNK_SIZE).
+If for any read the return value is negative, perror, close files, return 1.
+If both files have successfully reached the EOF, then they were identical.
+common_bytes is the min from the read_bytes of both files.
+We iterate over these number of bytes checking one by one all the chars, if mismatch - printf the tracker + i which shows where the mismatch is.
+After the loop update the tracker with the min bytes read (common_bytes).
+If the read_bytes of both files were not identical, mismatch is at the end of the shorter file.
+

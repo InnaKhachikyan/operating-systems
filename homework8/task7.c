@@ -3,6 +3,8 @@
 #include <unistd.h>
 
 #define MAX_BUFFER_SIZE 50
+#define CHUNK_SIZE 10
+
 int main(void) {
 
 	printf("Enter the first file path: ");
@@ -31,14 +33,14 @@ int main(void) {
 		close(fd1);
 		return 1;
 	}
-	char buf1;
-	char buf2;
+	char buf1[CHUNK_SIZE];
+	char buf2[CHUNK_SIZE];
 
 	ssize_t read_bytes1, read_bytes2;
 
 	size_t tracker = 0;
 	while(1) {
-		read_bytes1 = read(fd1, &buf1, 1);
+		read_bytes1 = read(fd1, buf1, CHUNK_SIZE);
 		if(read_bytes1 < 0) {
 			perror("read");
 			close(fd1);
@@ -46,7 +48,7 @@ int main(void) {
 			return 1;
 		}
 
-		read_bytes2 = read(fd2, &buf2, 1);
+		read_bytes2 = read(fd2, buf2, CHUNK_SIZE);
 		if(read_bytes2 < 0) {
 			perror("read");
 			close(fd1);
@@ -57,20 +59,25 @@ int main(void) {
 			printf("Files are identical\n");
 			break;
 		}
-		if(read_bytes1 == 0 || read_bytes2 == 0) {
-			printf("Files differ at byte %zu \n", tracker);
-			close(fd1);
-			close(fd2);
-			return 1;
-		}
-		if(buf1 != buf2) {
-			printf("Files differ at byte %zu \n", tracker);
-			close(fd1);
-			close(fd2);
-			return 1;
+		size_t common_bytes = (read_bytes1 < read_bytes2) ? read_bytes1 : read_bytes2;
+		for(size_t i = 0; i < common_bytes; i++) {
+			
+			if(buf1[i] != buf2[i]) {
+				printf("Files differ at byte %zu \n", tracker + i);
+				close(fd1);
+				close(fd2);
+				return 1;
+			}
 		}
 
-		tracker++;
+		tracker += (size_t)common_bytes;
+		if(read_bytes1 != read_bytes2) {
+				printf("Files differ at byte %zu \n", tracker);
+				close(fd1);
+				close(fd2);
+				return 1;
+		}
+
 	}
 
 	close(fd1);
