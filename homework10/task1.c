@@ -10,7 +10,7 @@ long long counter = 0;
 pthread_spinlock_t spinlock;
 pthread_mutex_t mutex_lock;
 
-void *inc_spin(void*) {
+void *inc_spin(void* arg) {
 	for(int i = 0; i < NUM_INC; i++) {
 		pthread_spin_lock(&spinlock);
 		counter++;
@@ -19,7 +19,7 @@ void *inc_spin(void*) {
 	return NULL;
 }
 
-void *inc_mutex(void*) {
+void *inc_mutex(void* arg) {
 	for(int i = 0; i < NUM_INC; i++) {
 		pthread_mutex_lock(&mutex_lock);
 		counter++;
@@ -28,7 +28,7 @@ void *inc_mutex(void*) {
 	return NULL;
 }
 
-void *inc_unsync(void*) {
+void *inc_unsync(void* arg) {
 	for(int i = 0; i < NUM_INC; i++){
 		counter++;
 	}
@@ -37,17 +37,14 @@ void *inc_unsync(void*) {
 
 int main(int args, char *argv[]) {
 
-	pthread_t *threads = (pthread_t*)malloc(sizeof(pthread_t) * NUM_THREADS);
-	if(!threads) {
-		perror("malloc");
+	if(args < 2) {
+		printf("Correct usage: %s <mode> (nosync/mutex/spin)\n", argv[0]);
 		return 1;
 	}
 
-
-	if(args < 2) {
-		printf("Correct usage: %s <mode> (nosync/mutex/spin)\n", argv[0]);
-		free(threads);
-		threads = NULL;
+	pthread_t *threads = (pthread_t*)malloc(sizeof(pthread_t) * NUM_THREADS);
+	if(!threads) {
+		perror("malloc");
 		return 1;
 	}
 
@@ -131,6 +128,8 @@ int main(int args, char *argv[]) {
 
 	else {
 		printf("Enter a valid mode: nosync OR mutex OR spin\n");
+		free(threads);
+		threads = NULL;
 		return 1;
 	}
 
