@@ -17,3 +17,9 @@ For the long version with usleep(100) mutex is much better. When the job to be d
 The semaphore itself keeps the track of when the slots are empty/full, so the thread goes to sleep until
  the condition is met. It does not lock the critical section. For locking critical section we still need some locking mechanism, like mutex. Sempahore is for inter-thread (for this task) communication, so that they "know" when they can produce/consume, and when there is no job to do yet, and can go to sleep.
 
+### Task 4
+Using only sleep() is not reliable because we cannot control or predict how the OS scheduler interleaves threads or which thread will wake up first, so timing based delays do not guarantee any order. Semaphores solve this problem as they explicitly block and wake specific threads based on logical conditions, not on timing.
+
+I attach the screenshot on the test with only 10 iterations (to fit in one terminal screenshot), but changed the program iterations to 1000.
+
+![task 4 results](./task4.png)
