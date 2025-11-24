@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <semaphore.h>
 
-#define N 10
+#define N 1000
 
 pthread_t threadA, threadB, threadC;
 sem_t semA, semB, semC;
