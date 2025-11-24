@@ -11,3 +11,9 @@ For the short version spinlock is better, as the work is short it is better to w
 For the long version with usleep(100) mutex is much better. When the job to be done is long, it is better to use mutex, to sleep until the lock is released rather than do a busy loop-waiting as it takes much resources.
 
 ![task 2 results](./task2.png)
+
+
+### Task 3
+The semaphore itself keeps the track of when the slots are empty/full, so the thread goes to sleep until
+ the condition is met. It does not lock the critical section. For locking critical section we still need some locking mechanism, like mutex. Sempahore is for inter-thread (for this task) communication, so that they "know" when they can produce/consume, and when there is no job to do yet, and can go to sleep.
+
