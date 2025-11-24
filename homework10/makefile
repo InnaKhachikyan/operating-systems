@@ -7,6 +7,7 @@ all:
 	gcc -pthread task2.c -o task2
 	gcc -pthread task3.c -o task3
 	gcc -pthread task4.c -o task4
+	gcc -pthread task5.c -o task5
 
 test:
 	./task1 nosync
@@ -18,3 +19,4 @@ test:
 	time ./task2 spin long
 	./task3
 	./task4
+	./task5
