@@ -23,6 +23,9 @@ void* produce(void* arg) {
 		pthread_mutex_lock(&buffer_mutex);
 		buffer[in_pos] = i;
 		in_pos = (in_pos + 1) % BUFFER_SIZE;
+		int sem_value;
+		sem_getvalue(&full_slots, &sem_value);
+		printf("[Producers] elements in buffer %d\n", sem_value);
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_post(&full_slots);
 	}
@@ -35,6 +38,9 @@ void* consume(void* arg) {
 		pthread_mutex_lock(&buffer_mutex);
 		printf("READ: %d\n",buffer[out_pos]);
 		out_pos = (out_pos + 1) % BUFFER_SIZE;
+		int sem_value;
+		sem_getvalue(&full_slots, &sem_value);
+		printf("[Consumers] elements in buffer %d\n", sem_value);
 		pthread_mutex_unlock(&buffer_mutex);
 		sem_post(&empty_slots);
 	}
